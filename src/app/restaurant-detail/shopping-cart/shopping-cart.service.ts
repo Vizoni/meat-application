@@ -1,4 +1,4 @@
-import { CartItem } from "app/restaurant-detail/shopping-cart/cart-item.model";
+import { CartItem } from './cart-item.model';
 import { MenuItem } from "app/restaurant-detail/menu-item/menu-item.model";
 
 export class ShoppingCartService {
@@ -13,7 +13,7 @@ export class ShoppingCartService {
         let foundItem = this.items.find((itemDoMenu) => itemDoMenu.menuItem.id === item.id)
         if (foundItem) {
             // se o item já existe, acrescenta um na quantidade
-            foundItem.quantity += 1;
+            this.increaseQuantity(foundItem);
         } else {
             this.items.push(new CartItem(item));
         }
@@ -28,6 +28,17 @@ export class ShoppingCartService {
         return this.items
         .map(item => item.value())
         .reduce( (valorAnterior, valorAtual) => valorAnterior+valorAtual, 0);
+    }
+
+    increaseQuantity(item: CartItem) {
+        item.quantity += 1;
+    }
+
+    decreaseQuantity(item: CartItem) {
+        item.quantity -= 1;
+        if(item.quantity === 0) {
+            this.removeItem(item);
+        }
     }
 
 }
