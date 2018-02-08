@@ -8,6 +8,7 @@ import { RadioOption } from 'app/shared/radio/radio-option.model';
 import { OrderService } from 'app/order/order.service';
 import { CartItem } from 'app/restaurant-detail/shopping-cart/cart-item.model';
 import { Order, OrderItem } from 'app/order/order.model';
+import { AbstractControl } from '@angular/forms/src/model';
 
 @Component({
   selector: 'mt-order',
@@ -43,7 +44,21 @@ export class OrderComponent implements OnInit {
       number: this.formBuilder.control('', [Validators.required, Validators.pattern(this.numberPattern)]),
       optionalAddress: this.formBuilder.control(''),
       paymentOption: this.formBuilder.control('', [Validators.required])
-    })
+    },
+    {validator: OrderComponent.equalsTo})
+  }
+
+  // retorna um objeto com uma chave (por exemplo o nome do erro) e um valor booleano
+  static equalsTo(group: AbstractControl): {[key: string]: boolean} {
+    const email = group.get('email');
+    const emailConfirmation = group.get('emailConfirmation');
+    if (!email || !emailConfirmation) {
+      return undefined
+    }
+    if (email.value !== emailConfirmation.value) {
+      return {emailsNotMatch: true}
+    }
+    return
   }
 
   itemsValue(): number{
