@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { RadioOption } from 'app/shared/radio/radio-option.model';
 import { OrderService } from 'app/order/order.service';
@@ -20,7 +21,8 @@ export class OrderComponent implements OnInit {
   delivery: number = 8;
 
   constructor(
-    private orderService: OrderService
+    private orderService: OrderService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -50,7 +52,7 @@ export class OrderComponent implements OnInit {
     // transforma uma array de cartItems em uma array de OrderItems e atribui no objeto de compra
     order.orderItems = this.cartItems().map( (item: CartItem) => new OrderItem(item.quantity, item.menuItem.id))
     this.orderService.checkOrder(order).subscribe( (orderId: string) => {
-      console.log('compra:',orderId);
+      this.router.navigate(['/order-summary'])
       this.orderService.clear();
     })
   }
